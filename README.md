@@ -114,7 +114,7 @@ When deploying your application, it's essential to manage your environment varia
 
 2. **Add Environment Variables**: Populate the `.env` file with the necessary variables.
 
-### Accessing Environment Variables IN config.js file
+### Accessing Environment Variables Im config.js file
 
 In your Vite application, you can access these environment variables using `import.meta.env.VITE_VARIABLE_NAME` For example:
 
@@ -130,4 +130,4 @@ const config = {
 
 export default config;
 ```
----# MegaBlog
+---
