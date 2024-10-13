@@ -119,7 +119,7 @@ When deploying your application, it's essential to manage your environment varia
 In your Vite application, you can access these environment variables using `import.meta.env.VITE_VARIABLE_NAME` For example:
 
 ```js
-// ./config/config.js
+// ./src/config/config.js
 const config = {
   appwriteUrl: String(import.meta.env.VITE_APPWRITE_URL),
   appwriteProjectId: String(import.meta.env.VITE_APPWRITE_PROJECT_ID),
