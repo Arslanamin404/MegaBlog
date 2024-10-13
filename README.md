@@ -130,4 +130,116 @@ const config = {
 
 export default config;
 ```
+
+---
+
+## Authentication Service (Production Grade)
+
+For the authentication flow, we have implemented a robust, production-grade solution using Appwrite. The authentication service handles user registration, login, session management, and logout functionality securely and efficiently. Below is a detailed description of how to set up and use the authentication service in a production environment.
+
+### Step 1: Authentication Service Structure
+
+In this project, the authentication logic is encapsulated within a class `AuthService` for better maintainability and scalability.
+
+### File Structure
+
+Create a dedicated file to manage the authentication logic:
+
+```plaintext
+src/
+├── appwrite/
+│   └── auth_service.js
+├── config/
+│   └── config.js
+```
+
+### Step 2: Configure Appwrite Client in auth_service.js
+
+The authentication service is built using the Appwrite JavaScript. The following code is used to handle account creation, login, session management, and logout.
+
+```js
+// src/appwrite/auth_service.js
+import { config } from "../config/config";
+import { Client, Account, ID } from "appwrite";
+
+export class AuthService {
+  client = new Client();
+  account;
+
+  constructor() {
+    this.client
+      .setEndpoint(config.appwriteUrl) // Appwrite API URL
+      .setProject(config.appwriteProjectId); // Appwrite Project ID
+
+    this.account = new Account(this.client);
+  }
+
+  async createAccount({ email, password, name }) {
+    try {
+      const userAccount = await this.account.create(
+        ID.unique(),
+        email,
+        password,
+        name
+      );
+      if (userAccount) {
+        // Automatically log in the user after account creation
+        return this.login({ email, password });
+      } else {
+        return userAccount;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async login({ email, password }) {
+    try {
+      return await this.account.createEmailPasswordSession(email, password);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getCurrentUser() {
+    try {
+      return await this.account.get();
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async logout() {
+    try {
+      return await this.account.deleteSessions();
+    } catch (error) {
+      return error;
+    }
+  }
+}
+
+const authService = new AuthService();
+export default authService;
+```
+
+### Step 3: Config File for Production
+
+In the config directory, create a `config.js` file to manage environment variables in a centralized way. This helps you easily switch between different environments (development, production) without hardcoding values.
+
+### Step 4: Using the AuthService in Your Components
+
+To use the AuthService in your components, you can import it and call its methods like createAccount, login, getCurrentUser, and logout.
+
+### Benefits of This Approach
+
+1. **Scalability**: By encapsulating authentication logic within a dedicated service (`AuthService`), the app becomes more modular and easier to scale. You can extend or modify authentication methods (e.g., social login) without affecting other parts of the app.
+
+2. **Separation of Concerns**: Managing environment-specific variables (e.g., API URL, Project ID) via the `.env` and `config.js` files keeps sensitive data centralized and ensures that configurations can be easily changed for different environments (development, production).
+
+3. **Reusability**: The `AuthService` class is reusable across components, reducing code duplication and making the app more maintainable.
+
+4. **Security**: Sensitive information like API URLs and keys are securely managed via environment variables, preventing hardcoding of credentials in the codebase.
+
+5. **Error Handling**: The structured use of `try-catch` blocks helps manage errors more effectively, providing better debugging and user experience in the authentication flow.
+
 ---
