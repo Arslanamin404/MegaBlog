@@ -159,6 +159,7 @@ The authentication service is built using the Appwrite JavaScript. The following
 
 ```js
 // src/appwrite/auth_service.js
+// visit official documentation for root code
 import { config } from "../config/config";
 import { Client, Account, ID } from "appwrite";
 
