@@ -244,3 +244,74 @@ To use the AuthService in your components, you can import it and call its method
 5. **Error Handling**: The structured use of `try-catch` blocks helps manage errors more effectively, providing better debugging and user experience in the authentication flow.
 
 ---
+
+### Database Service with Appwrite
+
+The `DatabaseService` class provides a centralized approach to managing posts in the Appwrite database. This class handles CRUD (Create, Read, Update, Delete) operations for posts, ensuring all interactions with the Appwrite database are streamlined and reusable.
+
+#### Key Methods in `DatabaseService`
+
+1. **createPost**:
+
+   - Creates a new post in the Appwrite database using the `slug` as the document ID.
+   - The post data includes title, content, featured image, status, user ID, and created date.
+   - This method is wrapped in a `try-catch` block to handle potential errors during post creation.
+
+2. **updatePost**:
+
+   - Updates an existing post using the `slug` as the document ID.
+   - Allows modification of title, content, featured image, status, and creation date.
+
+3. **deletePost**:
+
+   - Deletes a post by its `slug` (document ID).
+   - If the operation fails, the method returns `false`, allowing for error handling in the app.
+
+4. **getPost**:
+
+   - Retrieves a single post by its `slug`.
+   - This method fetches detailed post information based on the document ID.
+
+5. **getPosts**:
+   - Lists all active posts (or other statuses if passed in queries) using custom Appwrite queries.
+   - The default query retrieves posts where the status is set to "active", allowing flexibility to modify the query for different conditions.
+
+#### Benefits of Using This Approach
+
+- **Centralized Data Management**: All database interactions are handled in a single service, making it easier to maintain and update the logic in one place.
+- **Error Handling**: The `try-catch` structure ensures errors are logged for easier debugging without breaking the application flow.
+- **Modularity**: By creating a dedicated `DatabaseService` class, this code promotes reusability across various components of the app.
+- **Flexible Queries**: The use of Appwrite’s `Query` system in the `getPosts` method allows for dynamic filtering of posts, improving data retrieval flexibility.
+
+This structured approach ensures that the app's database interactions are efficient, scalable, and easy to maintain.
+
+---
+
+### Storage Service with Appwrite
+
+The `StorageService` class manages file storage operations within the Appwrite environment. It allows uploading, deleting, and previewing files in a centralized and reusable manner. This service simplifies file management, ensuring that all interactions with the Appwrite storage API are handled consistently.
+
+#### Key Methods in `StorageService`
+
+1. **uploadFile**:
+
+   - Uploads a new file to the Appwrite storage bucket.
+   - It uses a unique ID for each file (`ID.unique()`) to ensure no file has a conflicting identifier.
+   - This method supports the upload of various file types and sizes.
+
+2. **deleteFile**:
+
+   - Deletes an existing file from the Appwrite storage using the file's unique ID.
+   - If successful, the method returns `true`; otherwise, it logs the error and returns `false` for easier error handling.
+
+3. **getFilePreview**:
+   - Retrieves a preview of a file stored in the Appwrite storage bucket.
+   - This can be particularly useful for displaying images, documents, or other media files without directly downloading them.
+
+This approach ensures smooth file handling operations across the application, providing a seamless experience for managing media and other resources.
+
+---
+
+#### For a detailed guide on integrating Appwrite with React, check out this blog post: [Integrating Appwrite with React](https://medium.com/@himanshu.sharma.for.work/integrating-appwrite-with-react-66bc419d1461).
+
+---
