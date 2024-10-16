@@ -315,3 +315,119 @@ This approach ensures smooth file handling operations across the application, pr
 #### For a detailed guide on integrating Appwrite with React, check out this blog post: [Integrating Appwrite with React](https://medium.com/@himanshu.sharma.for.work/integrating-appwrite-with-react-66bc419d1461).
 
 ---
+
+# Redux Toolkit Configuration in Large Projects
+
+This guide explains how to configure Redux Toolkit (RTK) in large-scale projects using an `authSlice` as an example.
+
+## 1. Install Dependencies
+
+To get started, install Redux Toolkit and React-Redux:
+
+```bash
+npm install @reduxjs/toolkit react-redux
+```
+
+## 2. Store Configuration (app/store/store.js)
+
+This file sets up your global store and combines slices.
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "../features/authSlice";
+
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+  },
+});
+
+export default store;
+```
+
+## 3. Auth Slice (features/authSlice.js)
+
+This slice handles the authentication state (login/logout) and manages user data.
+
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  status: false, // Logged in or not
+  userData: null, // User details
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    login: (state, action) => {
+      state.status = true;
+      state.userData = action.payload.userData;
+    },
+    logout: (state) => {
+      state.status = false;
+      state.userData = null;
+    },
+  },
+});
+
+export const { login, logout } = authSlice.actions;
+export default authSlice.reducer;
+```
+
+## 4. Using Redux in Components (App.jsx)
+
+Integrate Redux into your components to access the authentication state and dispatch actions.
+
+```jsx
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { login, logout } from "../features/auth/authSlice";
+import authService from "../features/auth/authService";
+
+const App = () => {
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    authService
+      .getCurrentUser()
+      .then((userData) => {
+        if (userData) {
+          dispatch(login({ userData }));
+        } else {
+          dispatch(logout());
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [dispatch]);
+
+  return loading ? <p>Loading...</p> : <div>Your App Content</div>;
+};
+
+export default App;
+```
+
+## 5. Connecting Store to the App
+
+In the main index.js or main.jsx file, wrap your app with the Redux Provider.
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import store from "./app/store";
+import App from "./App";
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
+```
+
+### This part of documentation explains how to configure Redux Toolkit and provides a structured approach to managing state in large applications.
+
+---
